@@ -338,7 +338,9 @@
     }
     function renderSpatial(n){
       const spots=hotspots[n.id]||[];
-      const mainMap=mapMode==='3d'?renderCimModel(n):`<div class="map-wrap"><div class="map-canvas"><img src="${n.image}" alt="${n.title}布局图" /><div class="hotspot-layer">${spots.map((s,i)=>`<button class="hotspot ${i===0?'active':''}" data-hotspot="${n.id}" style="left:${s.x}%;top:${s.y}%;width:${s.w}%;height:${s.h}%" title="点击查看${s.label}">${s.label}</button>`).join('')}</div></div><span class="map-caption">${n.floor} · ${n.title} · 第 ${n.page} 页布局稿 · 点击橙色分区</span></div>`;
+      // Every time the user enters the spatial view, lead with the CIM model.
+      // The 2D drawing remains an explicit verification mode in the switch above.
+      const mainMap=mapMode==='2d'?`<div class="map-wrap"><div class="map-canvas"><img src="${n.image}" alt="${n.title}布局图" /><div class="hotspot-layer">${spots.map((s,i)=>`<button class="hotspot ${i===0?'active':''}" data-hotspot="${n.id}" style="left:${s.x}%;top:${s.y}%;width:${s.w}%;height:${s.h}%" title="点击查看${s.label}">${s.label}</button>`).join('')}</div></div><span class="map-caption">${n.floor} · ${n.title} · 第 ${n.page} 页布局稿 · 点击橙色分区</span></div>`:renderCimModel(n);
       return `<div class="spatial-layout"><div class="spatial-view-shell"><div class="map-mode-switch"><button data-map-mode="3d" class="${mapMode==='3d'?'active':''}">CIM 3D模型</button><button data-map-mode="2d" class="${mapMode==='2d'?'active':''}">平面图校核</button></div>${mainMap}</div><div class="spatial-hints"><div class="spatial-hint"><b>空间关系</b>${n.note}</div><div class="spatial-hint"><b>重点落位</b>${n.items.slice(0,2).map(x=>x[0]).join(' / ')}</div><div class="spatial-hint"><b>交互逻辑</b>点击模型板块 → 当前节点高亮 → 右侧内容与详情同步</div></div></div>`;
     }
     function renderCimModel(n){
@@ -401,7 +403,7 @@
       document.querySelectorAll('[data-task-action]').forEach(b=>b.addEventListener('click',()=>{const t=adminState.tasks[+b.dataset.taskIndex];t.status=b.dataset.taskAction==='approve'?'已通过':'已驳回';persistAdmin();renderAdmin();}));
       document.querySelectorAll('[data-exhibit-index]').forEach(b=>b.addEventListener('click',()=>{const e=adminState.exhibits[+b.dataset.exhibitIndex];e.status=prompt('更新状态',e.status)||e.status;persistAdmin();renderAdmin();}));
     }
-    document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{activeView=b.dataset.view;document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('active',x===b));renderBody();}));
+    document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{activeView=b.dataset.view;if(activeView==='spatial')mapMode='3d';document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('active',x===b));renderBody();}));
     document.querySelectorAll('[data-hall]').forEach(b=>b.addEventListener('click',()=>{activeHall=b.dataset.hall;document.querySelectorAll('[data-hall]').forEach(x=>x.classList.toggle('active',x===b));renderAll();}));
     [['ownerFilter','owner'],['typeFilter','type'],['floorFilter','floor']].forEach(([id,key])=>$(id).addEventListener('change',e=>{filters[key]=e.target.value;renderAll();}));
     $('clearFilters').onclick=()=>{filters={owner:'all',type:'all',floor:'all'};['ownerFilter','typeFilter','floorFilter'].forEach(id=>$(id).value='all');activeHall='all';document.querySelectorAll('[data-hall]').forEach(x=>x.classList.toggle('active',x.dataset.hall==='all'));renderAll();};
