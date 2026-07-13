@@ -42,9 +42,10 @@
     .filters { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
     .filters select { min-width:116px; color:#e8ebe5; background:var(--panel); border:1px solid var(--line); padding:9px 28px 9px 10px; border-radius:9px; font-size:11px; }
     .filters option { color:#111; }
-    .workspace { max-width:1500px; margin:auto; padding:0 34px 45px; display:grid; grid-template-columns:245px minmax(0,1fr); gap:15px; align-items:start; }
-    .tree-panel,.content-panel,.side-info { border:1px solid var(--line); background:var(--panel); border-radius:18px; box-shadow:var(--shadow); }
+    .workspace { max-width:1500px; margin:auto; padding:0 34px 45px; display:grid; grid-template-columns:245px minmax(0,1fr) 280px; gap:15px; align-items:start; }
+    .tree-panel,.content-panel,.side-info,.node-map-panel { border:1px solid var(--line); background:var(--panel); border-radius:18px; box-shadow:var(--shadow); }
     .tree-panel { position:sticky; top:91px; overflow:hidden; }
+    .node-map-panel { position:sticky; top:91px; max-height:calc(100vh - 112px); overflow:auto; }
     .tree-head { padding:17px 17px 13px; border-bottom:1px solid var(--line); }
     .tree-head strong { display:block; font-size:14px; }
     .tree-head span { display:block; color:var(--muted); font-size:10px; margin-top:5px; }
@@ -125,6 +126,15 @@
     .explorer-head h2 { margin:0; font-family:var(--serif); font-size:25px; letter-spacing:-.04em; }
     .explorer-head p { margin:0; color:var(--muted); font-size:11px; }
     .node-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
+    .node-map-panel .explorer { max-width:none; margin:0; padding:18px 14px 15px; }
+    .node-map-panel .explorer-head { align-items:flex-start; margin-bottom:12px; }
+    .node-map-panel .explorer-head h2 { font-size:21px; }
+    .node-map-panel .explorer-head p { line-height:1.55; margin-top:5px; }
+    .node-map-panel .node-grid { grid-template-columns:1fr; gap:8px; }
+    .node-map-panel .node-card { min-height:0; padding:13px; border-radius:12px; }
+    .node-map-panel .node-card h3 { font-size:16px; margin:6px 0 7px; }
+    .node-map-panel .node-card p { font-size:10px; line-height:1.5; }
+    .node-map-panel .node-card footer { margin-top:9px; }
     .node-card { min-height:150px; padding:16px; border:1px solid var(--line); border-radius:14px; background:var(--panel); cursor:pointer; transition:transform .2s ease,opacity .2s ease,border-color .2s ease,box-shadow .2s ease; animation:rise .45s both; }
     .node-card:hover { transform:translateY(-3px); border-color:var(--accent); box-shadow:0 14px 30px rgba(0,0,0,.22); }
     .node-card.active { border-color:var(--accent); box-shadow:0 0 0 1px var(--accent),0 14px 30px rgba(255,91,37,.12); }
@@ -220,12 +230,12 @@
     #app.hidden { display:none; }
     @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
     @keyframes rise { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-    @media (max-width:1100px) { .metrics { grid-template-columns:repeat(3,1fr); } .workspace { grid-template-columns:200px minmax(0,1fr); } .node-grid { grid-template-columns:repeat(3,1fr); } }
+    @media (max-width:1100px) { .metrics { grid-template-columns:repeat(3,1fr); } .workspace { grid-template-columns:200px minmax(0,1fr) 250px; } .node-grid { grid-template-columns:repeat(3,1fr); } .node-map-panel .node-grid { grid-template-columns:1fr; } }
     @media (max-width:1100px) { .admin-layout { grid-template-columns:185px minmax(0,1fr); } .admin-kpi-grid { grid-template-columns:repeat(2,1fr); } .admin-grid-2,.space-admin { grid-template-columns:1fr; } }
-    @media (max-width:780px) { .topbar { padding:0 18px; } .top-actions small { display:none; } .hero { padding:40px 18px 28px; grid-template-columns:1fr; gap:24px; } .metrics,.control-bar,.workspace,.explorer { padding-left:18px; padding-right:18px; } .metrics { grid-template-columns:repeat(2,1fr); } .control-bar { align-items:flex-start; } .workspace { grid-template-columns:1fr; } .tree-panel { position:static; } .tree { max-height:none; display:grid; grid-template-columns:repeat(2,1fr); gap:4px; } .tree-group { margin:0; } .content-head { padding:19px 17px 15px; } .view-body { padding:15px 17px 20px; } .overview-layout,.modal-body { grid-template-columns:1fr; } .node-grid { grid-template-columns:repeat(2,1fr); } .spatial-hints { grid-template-columns:1fr; } }
+    @media (max-width:780px) { .topbar { padding:0 18px; } .top-actions small { display:none; } .hero { padding:40px 18px 28px; grid-template-columns:1fr; gap:24px; } .metrics,.control-bar,.workspace,.explorer { padding-left:18px; padding-right:18px; } .metrics { grid-template-columns:repeat(2,1fr); } .control-bar { align-items:flex-start; } .workspace { grid-template-columns:1fr; } .tree-panel,.node-map-panel { position:static; max-height:none; } .tree { max-height:none; display:grid; grid-template-columns:repeat(2,1fr); gap:4px; } .tree-group { margin:0; } .content-head { padding:19px 17px 15px; } .view-body { padding:15px 17px 20px; } .overview-layout,.modal-body { grid-template-columns:1fr; } .node-grid { grid-template-columns:repeat(2,1fr); } .node-map-panel .node-grid { grid-template-columns:repeat(2,1fr); } .spatial-hints { grid-template-columns:1fr; } }
     @media (max-width:780px) { .admin-shell { padding:28px 18px 38px; } .admin-layout { grid-template-columns:1fr; } .admin-nav { position:static; display:grid; grid-template-columns:repeat(2,1fr); gap:4px; } .admin-nav-label { grid-column:1/-1; } .admin-header { align-items:flex-start; flex-direction:column; } .admin-main { padding:15px; } }
     @media (max-width:780px) { .cim-stage { min-height:430px; } .cim-model { transform:translate(-50%,-46%) rotateX(58deg) rotateZ(-28deg) scale(.58); } .cim-model:hover { transform:translate(-50%,-46%) rotateX(58deg) rotateZ(-28deg) scale(.61); } .cim-tooltip { max-width:165px; } .cim-legend { right:10px; bottom:10px; width:125px; } }
-    @media (max-width:480px) { h1 { font-size:43px; } .theme-switch button { padding:7px 8px; } .metrics { gap:7px; } .metric { min-height:78px; padding:13px; } .metric b { font-size:21px; } .metric span { font-size:10px; } .node-grid { grid-template-columns:1fr; } .tree { grid-template-columns:1fr; } .content-head { flex-direction:column; } }
+    @media (max-width:480px) { h1 { font-size:43px; } .theme-switch button { padding:7px 8px; } .metrics { gap:7px; } .metric { min-height:78px; padding:13px; } .metric b { font-size:21px; } .metric span { font-size:10px; } .node-grid,.node-map-panel .node-grid { grid-template-columns:1fr; } .tree { grid-template-columns:1fr; } .content-head { flex-direction:column; } }
     .theme-elegant { --bg:#f1ede4; --bg-2:#f7f4ec; --panel:rgba(255,253,247,.94); --panel-2:#fff; --ink:#1d2430; --muted:#6c747a; --line:rgba(29,36,48,.14); --accent:#a47a2e; --accent-2:#7e5a1d; --green:#789e70; --blue:#7087a6; --shadow:0 18px 45px rgba(80,62,34,.12); }
     .theme-elegant .topbar { background:rgba(241,237,228,.86); } .theme-elegant .brand-mark { background:var(--accent); } .theme-elegant .hero p,.theme-elegant .narrative-card p { color:#515b63; } .theme-elegant .metric b,.theme-elegant .fact b,.theme-elegant .tree-section,.theme-elegant .item-row strong,.theme-elegant .node-card h3 { color:var(--ink); } .theme-elegant .tree-child { color:#647077; } .theme-elegant .tree-child:hover,.theme-elegant .tree-child.active { color:var(--ink); background:rgba(164,122,46,.12); border-left-color:var(--accent); } .theme-elegant .narrative-card,.theme-elegant .fact,.theme-elegant .item-row,.theme-elegant .spatial-hint { background:rgba(255,255,255,.58); } .theme-elegant .narrative-card p,.theme-elegant .item-row span { color:#5d676c; } .theme-elegant .modal-card { background:#fffdf7; } .theme-elegant .modal-copy p { color:#38434a; } .theme-elegant .modal-body { color:var(--ink); } .theme-elegant .media-box { background:#eee9de; }
   </style>
@@ -243,9 +253,7 @@
 
     <section class="control-bar"><div class="mode-switch"><button data-view="outline" class="active">大纲视图</button><button data-view="spatial">空间视图</button></div><div class="hall-switch"><button data-hall="all" class="active">全馆</button><button data-hall="A">A馆</button><button data-hall="B">B馆</button></div><div class="filters"><select id="ownerFilter" aria-label="牵头单位"><option value="all">全部牵头单位</option></select><select id="typeFilter" aria-label="展项类型"><option value="all">全部展项类型</option></select><select id="floorFilter" aria-label="展厅楼层"><option value="all">全部楼层</option></select><button class="tool-clear" id="clearFilters" style="border:1px solid var(--line);color:var(--muted);background:var(--panel);padding:9px 10px;border-radius:9px;font-size:11px">清除筛选</button></div></section>
 
-    <main class="workspace"><aside class="tree-panel"><div class="tree-head"><strong>展陈大纲</strong><span>点击节点，内容区同步切换</span></div><nav class="tree" id="tree"></nav></aside><section class="content-panel"><div class="content-head"><div><div class="kicker" id="contentKicker">第一展区 / A1</div><h2 id="contentTitle">百年历程</h2><p id="contentLead">浓缩展示上海1843年开埠至今180余年工业发展历程，同步设置全球/中国工业发展时间参考线。</p></div><div class="page-badge" id="pageBadge">布局稿 01 / 14</div></div><div class="view-body" id="viewBody"></div></section></main>
-
-    <section class="explorer"><div class="explorer-head"><div><h2>主题节点地图</h2><p>未匹配筛选条件的节点会淡出；点击卡片打开详情浮窗。</p></div><span class="page-badge" id="resultCount">14 个节点</span></div><div class="node-grid" id="nodeGrid"></div></section>
+    <main class="workspace"><aside class="tree-panel"><div class="tree-head"><strong>展陈大纲</strong><span>点击节点，内容区同步切换</span></div><nav class="tree" id="tree"></nav></aside><section class="content-panel"><div class="content-head"><div><div class="kicker" id="contentKicker">第一展区 / A1</div><h2 id="contentTitle">百年历程</h2><p id="contentLead">浓缩展示上海1843年开埠至今180余年工业发展历程，同步设置全球/中国工业发展时间参考线。</p></div><div class="page-badge" id="pageBadge">布局稿 01 / 14</div></div><div class="view-body" id="viewBody"></div></section><aside class="node-map-panel"><section class="explorer"><div class="explorer-head"><div><h2>主题节点地图</h2><p>点击节点，模型与内容同步高亮。</p></div><span class="page-badge" id="resultCount">14 个节点</span></div><div class="node-grid" id="nodeGrid"></div></section></aside></main>
 
     <footer class="footer"><b>资料来源：</b>20260712工博馆布局.pdf；0712-上海工业博物馆展区设置一览表.docx；20260613上海工业博物馆一体化展陈展品落位-2.pdf。<br><b>待细化：</b>部分牵头单位、净高、具体展品清单与最终建筑点位仍标记为“待明确 / 待补充”，网页保留占位并支持后续替换底图。</footer>
   </div>
